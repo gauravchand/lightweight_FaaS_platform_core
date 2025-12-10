@@ -48,13 +48,3 @@ We compared **Container-based** (e.g., Docker) vs. **Process-based** (e.g., fork
 | **Resource Overhead** | **Medium.** Requires a container daemon and virtual network interfaces. | **Low.** Very minimal overhead; just memory for the interpreter. |
 | **Cold Start Perf** | **Slower.** Must spin up container filesystem and networking (approx 500ms-2s). | **Fast.** Process creation is nearly instantaneous (approx 10-50ms). |
 | **Impl. Complexity** | **High.** Requires managing container runtimes, networking bridges, and image registries. | **Low.** Uses standard OS system calls. |
-
-### Recommendation
-**Decision:** We recommend a **Process-based** approach for the AryaXAI internal platform.
-
-**Justification:**
-1.  **Performance:** The prompt specifies "maximum performance" and "lightweight." Processes have significantly faster start-up times than containers, eliminating the "Cold Start" penalty that plagues standard FaaS.
-2.  **Simplicity:** As an internal tool, we do not have the same hostile multi-tenant security risks as a public cloud (like AWS). We can trust our internal developers more than public users.
-3.  **Control:** Managing processes gives us granular control over memory and CPU without the abstraction layer of a container engine.
-
-*Note: As the platform matures, we may move to microVMs (like Firecracker) for better isolation, but for the MVP, Process-based meets the "lightweight" requirement best.*
